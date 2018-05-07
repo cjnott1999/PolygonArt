@@ -1,6 +1,5 @@
 package PolygonArt;
 
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -14,9 +13,28 @@ import java.util.Iterator;
 import java.lang.Math;
 import io.github.jdiemke.triangulation.*;
 
+/**
+ * A class of static methods useful for Art
+ * 
+ * @author Cameron Nottingham
+ */
 
 public class Art {
     private static Random rand = new Random();
+
+
+    /**
+     * Rezizes a BufferedImage relative to a given JPanel
+     * 
+     * @param BufferedImage
+     *      The BufferedImage to be resized 
+     * 
+     * @param JPanel
+     *      The JPanel that the BufferedImage will be fitted to
+     * 
+     * @return Returns a new, resized BufferedImage 
+     * 
+     */
     public static BufferedImage resizeToScale(BufferedImage img, JPanel mainPanel) {
         double scale = Math.min(((double) mainPanel.getWidth() / (double) img.getWidth()),
             ((double) mainPanel.getHeight() / (double) img.getHeight()));
@@ -34,6 +52,18 @@ public class Art {
 
         return dimg;
     }
+    /**
+     * Triangulates a given BufferedImage 
+     * Credit to jdiemke for his Delaunay Triangulation classes -- jdiemke.github.io
+     * 
+     * @param int 
+     *      The number of points to be triangulated excluding the four corners
+     * 
+     * @param BufferedImage
+     *      The BufferedImage to be triangulated 
+     * 
+     * @return The triangulated BufferedImage
+     */
 
     public static BufferedImage triangulate(int sl, BufferedImage img) {
         BufferedImage drawnImage = img;
@@ -82,6 +112,18 @@ public class Art {
 
     }
 
+    /**
+     * Breaks down a BufferedImage into squares and draws it
+     * 
+     * @param int
+     *      The number of rows and columns
+     * 
+     * @param BufferedImage
+     *      The BufferedImage to be squared 
+     * 
+     * @return A squared BufferedImage 
+     */
+
     public static BufferedImage squares(int rc, BufferedImage img) {
 
         if (rc == 0) {
@@ -91,11 +133,11 @@ public class Art {
 
         int rows = rc;
         int cols = rc;
-        int pieces = rows * cols;
+
 
         int pieceWidth = image.getWidth() / cols;
         int pieceHeight = image.getHeight() / rows;
-        int count = 0;
+    
 
         for (int x = 0; x < rows; x++) {
             for (int y = 0; y < cols; y++) {
@@ -113,8 +155,17 @@ public class Art {
 
 
     }
+
+    /**
+     * A private method to get the average color from a paricular image
+     * 
+     * @param BufferedImage
+     *      The BufferedImage to find the color of
+     * 
+     * @return The Color 
+     */
     private static Color getColor(BufferedImage img) {
-        int alpha = 0;
+ 
         int redTotal = 0;
         int blueTotal = 0;
         int greenTotal = 0;
@@ -137,6 +188,18 @@ public class Art {
 
         return new Color(red, green, blue);
     }
+
+    /**
+     * Private method to get the average color from a Triangle2D
+     * 
+     * @param BufferedImage 
+     *      The BufferedImage from which the colors are sampled
+     * 
+     * @param Triangle2D
+     *      The Triangle2D to find the color of
+     * 
+     * @return The Color 
+     */
 
     private static Color getColor(BufferedImage img, Triangle2D element) {
         int redTotal = 0;
@@ -162,6 +225,21 @@ public class Art {
         return new Color(red, green, blue);
 
     }
+
+    /**
+     * Generates the points for a triangulation 
+     * 
+     * @param int 
+     *      The number of points to generate
+     * 
+     * @param Vector<Vector2D>
+     *      The Vector to add the points to
+     * 
+     * @param BufferedImage
+     *      The BufferedImage that will be triangulated. Used to grab the four corners of the image as points/
+     * 
+     * 
+     */
     private static void generatePoints(int sl, Vector < Vector2D > pointSet, BufferedImage img) {
 
         pointSet.add(new Vector2D(0.0, 0.0));
@@ -172,7 +250,15 @@ public class Art {
             pointSet.add(new Vector2D((rand.nextDouble() * img.getWidth()), (rand.nextDouble() * img.getHeight())));
         }
     }
-
+    /**
+     * Creates an identical copy of a BufferedImage in memory
+     * 
+     * @param BufferedImage
+     *      The image to be protected
+     * 
+     * @return 
+     *      A new, identical copy of the original image 
+     */
     public static BufferedImage protect(BufferedImage img) {
         ColorModel c = img.getColorModel();
         boolean iap = c.isAlphaPremultiplied();
@@ -181,27 +267,5 @@ public class Art {
         return original;
     }
 
-    public static BufferedImage testTriangles(BufferedImage img) {
-
-        Graphics2D graphics = img.createGraphics();
-        graphics.setPaint(new Color((int)(Math.random() * 0x1000000)));
-        int[] x = new int[] {
-            0,
-            img.getWidth(),
-            0
-        };
-        int[] y = new int[] {
-            0,
-            0,
-            img.getHeight()
-        };
-
-        graphics.fillPolygon(x, y, 3);
-        graphics.dispose();
-
-        return img;
-
-
-    }
 
 }
