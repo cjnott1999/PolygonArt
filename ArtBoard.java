@@ -15,18 +15,13 @@ import PolygonArt.Art;
 
 
 public class ArtBoard extends JFrame {
-    JPanel mainPanel, checkPanel;
+
+	JPanel mainPanel, checkPanel;
     JPanel buttonPanel;
     JButton b_1, b_2, b_3, b_4;
     JSlider slider;
     JRadioButton triangleButton, squareButton;
     BufferedImage fileImage, panelImage, currentImage, originalImage;
-
-
-
-    public static void main(String[] args) {
-        new ArtBoard();
-    }
 
     public ArtBoard() {
         setPreferredSize(new Dimension(800, 600));
@@ -52,7 +47,9 @@ public class ArtBoard extends JFrame {
 
 
         mainPanel = new JPanel() {
-            public void paintComponent(Graphics g) {
+
+
+			public void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 int x = (this.getWidth() - panelImage.getWidth(null)) / 2;
                 int y = (this.getHeight() - panelImage.getHeight(null)) / 2;
@@ -99,28 +96,48 @@ public class ArtBoard extends JFrame {
         b_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (triangleButton.isSelected() == true) {
-                    JFrame frame = new JFrame();
-                    originalImage = Art.protect(fileImage);
-                    String input = (String) JOptionPane.showInputDialog(frame, "Please enter the number of triangles");
-                    int numberOfTriangles = Integer.parseInt(input);
-                    panelImage = Art.resizeToScale(Art.triangulate(numberOfTriangles, fileImage), mainPanel);
-                    currentImage = panelImage;
-                    fileImage = originalImage;
-                    mainPanel.repaint();
-                } else if (squareButton.isSelected() == true) {
-                    Frame frame = new JFrame();
-                    originalImage = Art.protect(fileImage);
-                    String input = (String) JOptionPane.showInputDialog(frame, "Please enter the number of squares");
-                    int baseInput = Integer.parseInt(input);
-                    int squaredInput = nearestSquare(baseInput);
-                    int numberOfSquares = (int) Math.sqrt(squaredInput);
-                    panelImage = Art.resizeToScale(Art.squares(numberOfSquares, fileImage), mainPanel);
-                    currentImage = panelImage;
-                    fileImage = originalImage;
-                    mainPanel.repaint();
+                    boolean complete = false;
+                    do{
+                        try {
 
-                }
-                else {
+                            originalImage = Art.protect(fileImage);
+                            String input = (String) JOptionPane.showInputDialog(mainPanel, "Please enter the number of triangles");
+    
+                            int numberOfTriangles = Integer.parseInt(input);
+                            panelImage = Art.resizeToScale(Art.triangulate(numberOfTriangles, fileImage), mainPanel);
+                            currentImage = panelImage;
+                            fileImage = originalImage;
+                            mainPanel.repaint();
+                        } catch (NumberFormatException excpetion) {
+                            JOptionPane.showMessageDialog(mainPanel, "Please enter an integer value");
+                        }
+                    }while(complete = false);
+                    
+
+                } else if (squareButton.isSelected() == true) {
+                    boolean complete = false;
+                    do{
+                        try {
+
+                            originalImage = Art.protect(fileImage);
+                            String input = (String) JOptionPane.showInputDialog(mainPanel, "Please enter the number of squares");
+                            int baseInput = Integer.parseInt(input);
+                            int squaredInput = nearestSquare(baseInput);
+                            int numberOfSquares = (int) Math.sqrt(squaredInput);
+                            complete = true;
+                            panelImage = Art.resizeToScale(Art.squares(numberOfSquares, fileImage), mainPanel);
+                            currentImage = panelImage;
+                            fileImage = originalImage;
+                            mainPanel.repaint();
+                        } catch (NumberFormatException exception) {
+                            JOptionPane.showMessageDialog(mainPanel, "Please enter an integer value");
+
+                        }
+                    } while(complete == false);
+                    
+
+
+                } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please select a Polygon to begin");
                 }
             }
@@ -128,10 +145,17 @@ public class ArtBoard extends JFrame {
 
         b_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                setFile();
 
-                panelImage = Art.resizeToScale(fileImage, mainPanel);
-                mainPanel.repaint();
+                try {
+                    setFile();
+                    panelImage = Art.resizeToScale(fileImage, mainPanel);
+                    mainPanel.repaint();
+                } catch (NullPointerException exception) {
+                    System.out.println(exception);
+                }
+
+
+
             }
         });
         b_4.addActionListener(new ActionListener() {
